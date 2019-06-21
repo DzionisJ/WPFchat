@@ -24,14 +24,20 @@ namespace WPF_chatting_app
     {
         Socket sck;
         EndPoint epLocal, epRemote;
+
+        string MyIP;
+        string FriendIP;
+
+        int port;
+        int friendPort;
         public MainWindow()
         {
             InitializeComponent();
 
             sck = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             sck.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            string MyIP = GetLocalIP();
-            string FriendIP = GetLocalIP();
+             MyIP = GetLocalIP();
+            FriendIP = GetLocalIP();
                 
         }
 
@@ -68,12 +74,37 @@ namespace WPF_chatting_app
                     The_chat.Items.Add("Friend : " + receiveMessage);
                 }
 
-                byte[] bufer = new byte[1500];
+                byte[] buffer = new byte[1500];
+                sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epRemote, new AsyncCallback(MessageCallBack), buffer);
             }
             catch (Exception e)
             {
-                MessageBox.Show("asdasdas");
                 MessageBox.Show(e.ToString());
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            try
+            {
+                epLocal = new IPEndPoint(IPAddress.Parse(MyIP), Convert.ToInt32(port));
+                sck.Bind(epLocal);
+
+                epRemote = new IPEndPoint(IPAddress.Parse(FriendIP), Convert.ToInt32(friendPort));
+                sck.Connect(epRemote);
+
+                byte[] buffer = new byte[1500];
+
+                sck.BeginReceiveFrom(buffer, 0, buffer.Length, SocketFlags.None, ref epRemote, new AsyncCallback(MessageCallBack), buffer);
+
+                MessageBox.Show("Connected");
+                UserMesageBox.Focus();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.ToString());
             }
         }
 
