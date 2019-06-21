@@ -33,6 +33,7 @@ namespace WPF_chatting_app
         public MainWindow()
         {
             InitializeComponent();
+            send.IsEnabled = false;
 
             sck = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             sck.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
@@ -41,7 +42,7 @@ namespace WPF_chatting_app
                 
         }
 
-        private string GetLocalIP()
+        private string GetLocalIP() 
         {
             IPHostEntry host;
             host = Dns.GetHostEntry(Dns.GetHostName());
@@ -100,17 +101,15 @@ namespace WPF_chatting_app
 
                 MessageBox.Show("Connected");
                 UserMesageBox.Focus();
+                Createchat.IsEnabled = false;
+                send.IsEnabled = true;
             }
+
             catch (Exception ex)
             {
 
                 MessageBox.Show(ex.ToString());
             }
-        }
-
-        private void UserMesageBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            
         }
 
         private void Send_Click(object sender, RoutedEventArgs e)
@@ -122,6 +121,9 @@ namespace WPF_chatting_app
                 msg = enc.GetBytes(UserMesageBox.Text);
 
                 The_chat.Items.Add("You : " + UserMesageBox.Text);
+                UserMesageBox.Clear();
+                UserMesageBox.Focus();
+
             }
             catch (Exception s)
             {
