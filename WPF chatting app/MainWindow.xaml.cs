@@ -51,7 +51,7 @@ namespace WPF_chatting_app
         }
 
         private void MessageCallBack(IAsyncResult aResult)
-        {//hello
+        {
             try
             {
                 int size = sck.EndReceiveFrom(aResult, ref epRemote);
