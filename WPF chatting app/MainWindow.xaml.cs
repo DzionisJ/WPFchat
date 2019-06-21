@@ -28,15 +28,15 @@ namespace WPF_chatting_app
         string MyIP;
         string FriendIP;
 
-        int port;
-        int friendPort;
+        int port = 80;
+        int friendPort =81;
         public MainWindow()
         {
             InitializeComponent();
 
             sck = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             sck.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-             MyIP = GetLocalIP();
+            MyIP = GetLocalIP();
             FriendIP = GetLocalIP();
                 
         }
@@ -105,6 +105,28 @@ namespace WPF_chatting_app
             {
 
                 MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private void UserMesageBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            
+        }
+
+        private void Send_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding();
+                byte[] msg = new byte[1500];
+                msg = enc.GetBytes(UserMesageBox.Text);
+
+                The_chat.Items.Add("You : " + UserMesageBox.Text);
+            }
+            catch (Exception s)
+            {
+
+                MessageBox.Show(s.ToString());
             }
         }
 
